@@ -2,7 +2,6 @@ using System.IO;
 
 public static void CopyDirectory(string sourceDirName, string destDirName)
 {
-    // Get the subdirectories for the specified directory.
     DirectoryInfo dir = new DirectoryInfo(sourceDirName);
 
     if (!dir.Exists)
@@ -21,14 +20,20 @@ public static void CopyDirectory(string sourceDirName, string destDirName)
     FileInfo[] files = dir.GetFiles();
     foreach (FileInfo file in files)
     {
-        string tempPath = Path.Combine(destDirName, file.Name);
-        file.CopyTo(tempPath, false);
+        if (file.Extension != ".pdb" && file.Extension != ".xml")
+        {
+            string tempPath = Path.Combine(destDirName, file.Name);
+            file.CopyTo(tempPath, false);
+        }
     }
 
     // If copying subdirectories, copy them and their contents to new location.
     foreach (DirectoryInfo subdir in dirs)
     {
-        string tempPath = Path.Combine(destDirName, subdir.Name);
-        CopyDirectory(subdir.FullName, tempPath);
+        if (subdir.Name == "wwwroot" || subdir.Name == "runtimes")
+        {
+            string tempPath = Path.Combine(destDirName, subdir.Name);
+            CopyDirectory(subdir.FullName, tempPath);
+        }
     }
 }
