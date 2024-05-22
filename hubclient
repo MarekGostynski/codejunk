@@ -1,12 +1,13 @@
-
 root = true
 
 [*.{cs,vb}]
-dotnet_naming_rule.instance_fields_should_be_camel_case.severity = suggestion
-dotnet_naming_rule.instance_fields_should_be_camel_case.symbols  = instance_fields
-dotnet_naming_rule.instance_fields_should_be_camel_case.style    = instance_field_style
+dotnet_naming_rule.private_fields_should_have_underscore_prefix.severity = error
+dotnet_naming_rule.private_fields_should_have_underscore_prefix.symbols  = private_fields
+dotnet_naming_rule.private_fields_should_have_underscore_prefix.style    = private_field_style
 
-dotnet_naming_symbols.instance_fields.applicable_kinds           = field
+dotnet_naming_symbols.private_fields.applicable_kinds   = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers = !const
 
-dotnet_naming_style.instance_field_style.capitalization         = camel_case
-dotnet_naming_style.instance_field_style.prefix                 = _
+dotnet_naming_style.private_field_style.capitalization = camel_case
+dotnet_naming_style.private_field_style.prefix         = _
