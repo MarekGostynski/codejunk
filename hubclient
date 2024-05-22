@@ -1,51 +1,20 @@
-root = true
+  var tokenRequestParameters = new Dictionary<string, string>
+        {
+            {"grant_type", "client_credentials"},
+            {"client_id", clientId},
+            {"client_secret", clientSecret},
+            {"scope", "your_scope"} // replace "your_scope" with your actual scope
+        };
 
-[*.{cs,vb}]
-dotnet_naming_rule.private_fields_should_have_underscore_prefix.severity = error
-dotnet_naming_rule.private_fields_should_have_underscore_prefix.symbols  = private_fields
-dotnet_naming_rule.private_fields_should_have_underscore_prefix.style    = private_field_style
+        var request = new HttpRequestMessage(HttpMethod.Post, tokenEndpoint)
+        {
+            Content = new FormUrlEncodedContent(tokenRequestParameters)
+        };
 
-dotnet_naming_symbols.private_fields.applicable_kinds   = field
-dotnet_naming_symbols.private_fields.applicable_accessibilities = private
-dotnet_naming_symbols.private_fields.required_modifiers = !const
+        var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
 
-dotnet_naming_style.private_field_style.capitalization = camel_case
-dotnet_naming_style.private_field_style.prefix         = _
+        var json = await response.Content.ReadAsStringAsync();
+        var dictionary = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
 
-using System;
-using System.Linq;
-using System.Windows.Forms;
-
-public class LabelManager : ILabelManager
-{
-    public void Hide(params Label[] labels)
-    {
-        if (labels == null || labels.Length == 0)
-            throw new ArgumentException("No labels provided.");
-
-        labels.ToList().ForEach(label => label.Visible = false);
-    }
-
-    public void Show(params Label[] labels)
-    {
-        if (labels == null || labels.Length == 0)
-            throw new ArgumentException("No labels provided.");
-
-        labels.ToList().ForEach(label => label.Visible = true);
-    }
-
-    public void Update(string newText, params Label[] labels)
-    {
-        if (labels == null || labels.Length == 0)
-            throw new ArgumentException("No labels provided.");
-
-        labels.ToList().ForEach(label => label.Text = newText);
-    }
-}
-
-public interface ILabelManager
-{
-    void Hide(params Label[] labels);
-    void Show(params Label[] labels);
-    void Update(string newText, params Label[] labels);
-}
+        return dictionary["access_token"].ToString();
