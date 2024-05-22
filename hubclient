@@ -11,3 +11,41 @@ dotnet_naming_symbols.private_fields.required_modifiers = !const
 
 dotnet_naming_style.private_field_style.capitalization = camel_case
 dotnet_naming_style.private_field_style.prefix         = _
+
+using System;
+using System.Linq;
+using System.Windows.Forms;
+
+public class LabelManager : ILabelManager
+{
+    public void Hide(params Label[] labels)
+    {
+        if (labels == null || labels.Length == 0)
+            throw new ArgumentException("No labels provided.");
+
+        labels.ToList().ForEach(label => label.Visible = false);
+    }
+
+    public void Show(params Label[] labels)
+    {
+        if (labels == null || labels.Length == 0)
+            throw new ArgumentException("No labels provided.");
+
+        labels.ToList().ForEach(label => label.Visible = true);
+    }
+
+    public void Update(string newText, params Label[] labels)
+    {
+        if (labels == null || labels.Length == 0)
+            throw new ArgumentException("No labels provided.");
+
+        labels.ToList().ForEach(label => label.Text = newText);
+    }
+}
+
+public interface ILabelManager
+{
+    void Hide(params Label[] labels);
+    void Show(params Label[] labels);
+    void Update(string newText, params Label[] labels);
+}
